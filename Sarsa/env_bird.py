@@ -94,6 +94,7 @@ class Env(tk.Tk, object):
                     self.obstacle_right = [MAP_W-1, i]
             if gap == 7:
                 self.obstacle_right = [MAP_W-1, 10]
+            self.update()
         step = black.pop(0)
         black.append(step)
         if action == 0 and self.bird[1] > 0:

@@ -1,7 +1,7 @@
 from env_bird import Env
 from Sarsa_learning import ReinforceLearning
 
-train_round = 7000
+train_round = 4000
 game_round = 500
 
 
