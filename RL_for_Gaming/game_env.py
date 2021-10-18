@@ -7,7 +7,7 @@ import tkinter as tk
 
 UNIT = 3  # 像素边长
 L = 100  # 网络规模: L × L
-D_g = 0.03  # D_g = T - R
+D_g = 0  # D_g = T - R
 D_r = 0  # D_r = P - S
 
 '''
