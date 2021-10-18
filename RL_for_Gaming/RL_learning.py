@@ -31,18 +31,17 @@ class ReinforceLearning(object):
             state_action = agent.q_table.loc[agent.state, :]
             action = np.random.choice(state_action[state_action == np.max(state_action)].index)
         else:
-            action = np.random.choice(agent.actions)
+            action = np.random.choice(self.actions)
 
         i = agent.study_x
         j = agent.study_y
 
-        # 费米函数：是否进行学习并采取动作
+        # 费米函数：是否采取策略
         w = 1 / (1 + math.exp((agents[i][j].this_reward -
                                agents[agents[i][j].study_x][agents[i][j].study_y].this_reward) / K))
         if w > 0.5:
             # max(self.agents[i][j].q_table.loc[self.agents])
-            # agents[i][j].is_collaborator = agents[agents[i][j].study_x][
-            #     agents[i][j].study_y].is_collaborator
+            # agents[i][j].is_collaborator = agents[agents[i][j].study_x][agents[i][j].study_y].is_collaborator
             if action == 0:
                 agent.is_collaborator = agents[(agent.x - 1) % L][agent.y].is_collaborator
             if action == 1:
@@ -61,3 +60,4 @@ class ReinforceLearning(object):
         else:
             q_target = agent.this_reward
         agent.q_table.loc[agent.state, agent.action] += self.lr * (q_target - q_predict)
+        agent.action = agent.next_action

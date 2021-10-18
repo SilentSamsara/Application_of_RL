@@ -7,7 +7,7 @@ import tkinter as tk
 
 UNIT = 3  # 像素边长
 L = 100  # 网络规模: L × L
-D_g = 0  # D_g = T - R
+D_g = 0.03  # D_g = T - R
 D_r = 0  # D_r = P - S
 
 '''
@@ -90,21 +90,23 @@ class GameEnv(tk.Tk, object):
     def __build_env(self):
         for i in range(len(self.agents)):
             for j in range(len(self.agents[i])):
+                # 中间为合作者
                 origin = [int(L / 2), int(L / 2)]
                 self.agents[i][j].next_action = np.random.choice(self.agents[i][j].actions)
                 if math.sqrt((origin[0] - i) * (origin[0] - i) + (origin[1] - j) * (origin[1] - j)) < (L / 16):
                     self.agents[i][j].is_collaborator = True
+                # 初始随机分布
                 # if np.random.rand() < 0.5:
                 #     self.agents[i][j].is_collaborator = True
                 if self.agents[i][j].is_collaborator:
                     self.canvas.create_rectangle(
-                        i * UNIT, j * UNIT,
-                        i * UNIT + UNIT - 1, j * UNIT + UNIT - 1,
+                        j * UNIT, i * UNIT,
+                        j * UNIT + UNIT - 1, i * UNIT + UNIT - 1,
                         outline='blue',
                         fill='blue')
         for i in range(len(self.agents)):
             for j in range(len(self.agents[i])):
-                self.agents[i][j].next_state = str((self.get_cooperation_num(i, j) / 4))
+                self.agents[i][j].next_state = str((self.get_cooperation_num(i, j) / 5))
         self.determine_learning_objectives()
         self.canvas.pack()
 
@@ -114,8 +116,8 @@ class GameEnv(tk.Tk, object):
             for j in range(len(self.agents[i])):
                 if self.agents[i][j].is_collaborator:
                     self.canvas.create_rectangle(
-                        i * UNIT, j * UNIT,
-                        i * UNIT + UNIT - 1, j * UNIT + UNIT - 1,
+                        j * UNIT, i * UNIT,
+                        j * UNIT + UNIT - 1, i * UNIT + UNIT - 1,
                         outline='blue',
                         fill='blue')
         self.canvas.pack()
@@ -148,6 +150,8 @@ class GameEnv(tk.Tk, object):
             num += 1
         if self.agents[x][(y + 1) % L].is_collaborator:
             num += 1
+        if self.agents[x][y].is_collaborator:
+            num += 1
         return num
 
     # 一个时间步
@@ -174,5 +178,5 @@ class GameEnv(tk.Tk, object):
                 self.agents[i][j].next_reward += game_reward(self.agents[i][j], self.agents[i][(j - 1) % L])
                 self.agents[i][j].next_reward += game_reward(self.agents[i][j], self.agents[(i + 1) % L][j])
                 self.agents[i][j].next_reward += game_reward(self.agents[i][j], self.agents[i][(j + 1) % L])
-                self.agents[i][j].next_state = str((self.get_cooperation_num(i, j) / 4))
+                self.agents[i][j].next_state = str((self.get_cooperation_num(i, j) / 5))
 
