@@ -25,10 +25,10 @@ def begin():
                 RL.q_learning(env.agents[i][j], env.agents)
         env.draw_canvas()
 
-        for i in range(len(env.agents)):
-            for j in range(len(env.agents[i])):
-                print(env.agents[i][j].state, end=" | ")
-            print()
+        # for i in range(len(env.agents)):
+        #     for j in range(len(env.agents[i])):
+        #         print(env.agents[i][j].state, end=" | ")
+        #     print()
 
         ep += 1
         print(ep)
