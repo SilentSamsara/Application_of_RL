@@ -17,8 +17,9 @@ def begin():
         # 获取 t 收益，并确定状态
         env.set_next_reward()
 
-        # 确定学习对象
+        # Q-Learning begin:确定学习对象
         env.determine_learning_objectives()
+        # Q-Learning end
 
         # Q-Learning
         for i in range(len(env.agents)):

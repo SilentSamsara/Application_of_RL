@@ -33,6 +33,21 @@ class ReinforceLearning(object):
         else:
             action = np.random.choice(self.actions)
 
+        # Sarsa begin:
+        # if action == 0:
+        #     agent.study_x = (agent.x - 1) % L
+        #     agent.study_y = agent.y
+        # elif action == 1:
+        #     agent.study_x = agent.x
+        #     agent.study_y = (agent.y - 1) % L
+        # elif action == 2:
+        #     agent.study_x = (agent.x + 1) % L
+        #     agent.study_y = agent.y
+        # elif action == 3:
+        #     agent.study_x = agent.x
+        #     agent.study_y = (agent.y + 1) % L
+        # Sarsa end
+
         i = agent.study_x
         j = agent.study_y
 
@@ -56,7 +71,7 @@ class ReinforceLearning(object):
         agent.check_state_exist()
         q_predict = agent.q_table.loc[agent.state, agent.action]
         if np.random.rand() > self.epsilon:
-            q_target = agent.this_reward + self.gamma * agents[agent.study_x][agent.study_y].this_reward
+            q_target = agent.this_reward + self.gamma * agents[agent.study_x][agent.study_y].next_reward
         else:
             q_target = agent.this_reward
         agent.q_table.loc[agent.state, agent.action] += self.lr * (q_target - q_predict)
