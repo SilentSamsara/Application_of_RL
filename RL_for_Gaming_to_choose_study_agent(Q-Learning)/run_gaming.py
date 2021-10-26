@@ -18,19 +18,20 @@ def begin():
         env.set_next_reward()
 
         # Q-Learning begin:确定学习对象
-        env.determine_learning_objectives()
+        # env.determine_learning_objectives()
         # Q-Learning end
 
         # Q-Learning
         for i in range(len(env.agents)):
             for j in range(len(env.agents[i])):
+                env.fill_study_agent(env.agents[i][j])
                 RL.q_learning(env.agents[i][j], env.agents)
         env.draw_canvas()
 
-        for i in range(len(env.agents)):
-            for j in range(len(env.agents[i])):
-                print(env.agents[i][j].action, end=" | ")
-            print()
+        # for i in range(len(env.agents)):
+        #     for j in range(len(env.agents[i])):
+        #         print(env.agents[i][j].action, end=" | ")
+        #     print()
 
         ep += 1
         print(ep)

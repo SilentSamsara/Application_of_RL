@@ -5,8 +5,8 @@ import pandas as pd
 import operator
 import tkinter as tk
 
-UNIT = 3  # 像素边长
-L = 100  # 网络规模: L × L
+UNIT = 6  # 像素边长
+L = 50  # 网络规模: L × L
 D_g = 0.03  # D_g = T - R
 D_r = 0  # D_r = P - S
 
@@ -83,15 +83,15 @@ class GameEnv(tk.Tk, object):
         self.canvas = tk.Canvas(self, bg='white',
                                 height=L * UNIT,
                                 width=L * UNIT)
-        print("init over")
         self.__build_env()
+        print("init over")
 
     # 初始化可视化界面
     def __build_env(self):
+        origin = [int(L / 2), int(L / 2)]
         for i in range(len(self.agents)):
             for j in range(len(self.agents[i])):
                 # 中间为合作者
-                origin = [int(L / 2), int(L / 2)]
                 self.agents[i][j].next_action = np.random.choice(self.agents[i][j].actions)
                 if math.sqrt((origin[0] - i) * (origin[0] - i) + (origin[1] - j) * (origin[1] - j)) < (L / 16):
                     self.agents[i][j].is_collaborator = True
@@ -135,7 +135,7 @@ class GameEnv(tk.Tk, object):
                       self.agents[x][(y - 1) % L],
                       self.agents[(x + 1) % L][y],
                       self.agents[x][(y + 1) % L]]
-        study_agent = max(agent_list, key=operator.attrgetter('next_reward'))
+        study_agent = max(agent_list, key=operator.attrgetter('this_reward'))
         agent.study_x = study_agent.x
         agent.study_y = study_agent.y
 
@@ -162,6 +162,7 @@ class GameEnv(tk.Tk, object):
                 self.agents[i][j].total_reward += self.agents[i][j].this_reward
                 self.agents[i][j].this_reward = self.agents[i][j].next_reward
                 self.agents[i][j].state = self.agents[i][j].next_state
+                self.agents[i][j].action = self.agents[i][j].next_action
 
     # 确定学习目标对象
     def determine_learning_objectives(self):

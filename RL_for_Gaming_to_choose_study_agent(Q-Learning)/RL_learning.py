@@ -15,7 +15,7 @@ def check_state_exist(state, agent):
 
 
 K = 0.1
-L = 100
+L = 50
 
 
 class ReinforceLearning(object):
@@ -54,7 +54,7 @@ class ReinforceLearning(object):
         # 费米函数：是否采取策略
         w = 1 / (1 + math.exp((agents[i][j].this_reward -
                                agents[agents[i][j].study_x][agents[i][j].study_y].this_reward) / K))
-        if w > 0.5:
+        if w > np.random.rand():
             # max(self.agents[i][j].q_table.loc[self.agents])
             # agents[i][j].is_collaborator = agents[agents[i][j].study_x][agents[i][j].study_y].is_collaborator
             if action == 0:
@@ -71,8 +71,7 @@ class ReinforceLearning(object):
         agent.check_state_exist()
         q_predict = agent.q_table.loc[agent.state, agent.action]
         if np.random.rand() > self.epsilon:
-            q_target = agent.this_reward + self.gamma * agents[agent.study_x][agent.study_y].next_reward
+            q_target = agent.this_reward + self.gamma * agents[agent.study_x][agent.study_y].this_reward
         else:
             q_target = agent.this_reward
         agent.q_table.loc[agent.state, agent.action] += self.lr * (q_target - q_predict)
-        agent.action = agent.next_action
