@@ -6,7 +6,7 @@ import operator
 import tkinter as tk
 
 UNIT = 6  # 像素边长
-L = 50  # 网络规模: L × L
+L = 100  # 网络规模: L × L
 D_g = 0.03  # D_g = T - R
 D_r = 0  # D_r = P - S
 

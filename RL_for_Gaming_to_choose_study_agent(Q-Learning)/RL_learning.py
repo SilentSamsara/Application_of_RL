@@ -15,7 +15,7 @@ def check_state_exist(state, agent):
 
 
 K = 0.1
-L = 50
+L = 100
 
 
 class ReinforceLearning(object):
