@@ -15,7 +15,7 @@ def begin():
                 RL.choose_action(env.agents[i][j], env.agents)
 
         # 获取 t 收益，并确定状态
-        env.set_next_reward()
+        cooperation_rate = env.set_next_reward()
 
         # Q-Learning begin:确定学习对象
         # env.determine_learning_objectives()
@@ -24,6 +24,7 @@ def begin():
         # Q-Learning
         for i in range(len(env.agents)):
             for j in range(len(env.agents[i])):
+                # Q-Learning begin:确定学习对象
                 env.fill_study_agent(env.agents[i][j])
                 RL.q_learning(env.agents[i][j], env.agents)
         env.draw_canvas()
@@ -34,7 +35,9 @@ def begin():
         #     print()
 
         ep += 1
-        print(ep)
+        print(ep, cooperation_rate)
+        if cooperation_rate == 1:
+            break
 
 
 if __name__ == "__main__":

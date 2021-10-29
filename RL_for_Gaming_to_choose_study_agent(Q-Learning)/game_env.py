@@ -36,6 +36,7 @@ class Agent(object):
         self.x = x
         self.y = y
         self.is_collaborator = collaborator  # 是否为合作者。True为合作者，False为背叛者
+        self.next_is_collaborator = collaborator
         self.state = cooperation_rate  # 合作率（状态）
         self.action = 0  # 学习对象
         self.this_reward = 0  # 这个时间步的收益
@@ -59,13 +60,13 @@ class Agent(object):
 
 
 def game_reward(agent1, agent2):
-    if agent1.is_collaborator:
-        if agent2.is_collaborator:
+    if agent1.next_is_collaborator:
+        if agent2.next_is_collaborator:
             return R
         else:
             return S
     else:
-        if agent2.is_collaborator:
+        if agent2.next_is_collaborator:
             return T
         else:
             return P
@@ -93,12 +94,12 @@ class GameEnv(tk.Tk, object):
             for j in range(len(self.agents[i])):
                 # 中间为合作者
                 self.agents[i][j].next_action = np.random.choice(self.agents[i][j].actions)
-                if math.sqrt((origin[0] - i) * (origin[0] - i) + (origin[1] - j) * (origin[1] - j)) < (L / 16):
-                    self.agents[i][j].is_collaborator = True
+                if math.sqrt((origin[0] - i) * (origin[0] - i) + (origin[1] - j) * (origin[1] - j)) < (L / 18):
+                    self.agents[i][j].next_is_collaborator = True
                 # 初始随机分布
                 # if np.random.rand() < 0.5:
                 #     self.agents[i][j].is_collaborator = True
-                if self.agents[i][j].is_collaborator:
+                if self.agents[i][j].next_is_collaborator:
                     self.canvas.create_rectangle(
                         j * UNIT, i * UNIT,
                         j * UNIT + UNIT - 1, i * UNIT + UNIT - 1,
@@ -106,7 +107,7 @@ class GameEnv(tk.Tk, object):
                         fill='blue')
         for i in range(len(self.agents)):
             for j in range(len(self.agents[i])):
-                self.agents[i][j].next_state = str((self.get_cooperation_num(i, j) / 5))
+                self.agents[i][j].next_state = str((self.get_cooperation_num(i, j) / 4))
         self.determine_learning_objectives()
         self.canvas.pack()
 
@@ -114,7 +115,7 @@ class GameEnv(tk.Tk, object):
         self.canvas.delete("all")
         for i in range(len(self.agents)):
             for j in range(len(self.agents[i])):
-                if self.agents[i][j].is_collaborator:
+                if self.agents[i][j].next_is_collaborator:
                     self.canvas.create_rectangle(
                         j * UNIT, i * UNIT,
                         j * UNIT + UNIT - 1, i * UNIT + UNIT - 1,
@@ -135,7 +136,7 @@ class GameEnv(tk.Tk, object):
                       self.agents[x][(y - 1) % L],
                       self.agents[(x + 1) % L][y],
                       self.agents[x][(y + 1) % L]]
-        study_agent = max(agent_list, key=operator.attrgetter('this_reward'))
+        study_agent = max(agent_list, key=operator.attrgetter('next_reward'))
         agent.study_x = study_agent.x
         agent.study_y = study_agent.y
 
@@ -150,8 +151,8 @@ class GameEnv(tk.Tk, object):
             num += 1
         if self.agents[x][(y + 1) % L].is_collaborator:
             num += 1
-        if self.agents[x][y].is_collaborator:
-            num += 1
+        # if self.agents[x][y].is_collaborator:
+        #     num += 1
         return num
 
     # 一个时间步
@@ -163,6 +164,7 @@ class GameEnv(tk.Tk, object):
                 self.agents[i][j].this_reward = self.agents[i][j].next_reward
                 self.agents[i][j].state = self.agents[i][j].next_state
                 self.agents[i][j].action = self.agents[i][j].next_action
+                self.agents[i][j].is_collaborator = self.agents[i][j].next_is_collaborator
 
     # 确定学习目标对象
     def determine_learning_objectives(self):
@@ -172,12 +174,16 @@ class GameEnv(tk.Tk, object):
 
     # 获取 next_reward（进行博弈）
     def set_next_reward(self):
+        cooperator = 0
         for i in range(len(self.agents)):
             for j in range(len(self.agents[i])):
+                if self.agents[i][j].next_is_collaborator:
+                    cooperator += 1
                 self.agents[i][j].next_reward = 0
                 self.agents[i][j].next_reward += game_reward(self.agents[i][j], self.agents[(i - 1) % L][j])
                 self.agents[i][j].next_reward += game_reward(self.agents[i][j], self.agents[i][(j - 1) % L])
                 self.agents[i][j].next_reward += game_reward(self.agents[i][j], self.agents[(i + 1) % L][j])
                 self.agents[i][j].next_reward += game_reward(self.agents[i][j], self.agents[i][(j + 1) % L])
-                self.agents[i][j].next_state = str((self.get_cooperation_num(i, j) / 5))
+                self.agents[i][j].next_state = str((self.get_cooperation_num(i, j) / 4))
+        return cooperator / (L * L)
 

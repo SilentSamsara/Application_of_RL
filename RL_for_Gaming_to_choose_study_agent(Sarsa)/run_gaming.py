@@ -27,10 +27,10 @@ def begin():
                 RL.sarsa(env.agents[i][j], env.agents)
         env.draw_canvas()
 
-        for i in range(len(env.agents)):
-            for j in range(len(env.agents[i])):
-                print(env.agents[i][j].action, end=" | ")
-            print()
+        # for i in range(len(env.agents)):
+        #     for j in range(len(env.agents[i])):
+        #         print(env.agents[i][j].action, end=" | ")
+        #     print()
 
         ep += 1
         print(ep)

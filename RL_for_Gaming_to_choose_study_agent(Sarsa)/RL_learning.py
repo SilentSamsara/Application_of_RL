@@ -15,7 +15,7 @@ def check_state_exist(state, agent):
 
 
 K = 0.1
-L = 100
+L = 50
 
 
 class ReinforceLearning(object):
@@ -54,17 +54,17 @@ class ReinforceLearning(object):
         # 费米函数：是否采取策略
         w = 1 / (1 + math.exp((agents[i][j].this_reward -
                                agents[agents[i][j].study_x][agents[i][j].study_y].this_reward) / K))
-        if w > 0.5:
+        if w >= np.random.rand():
             # max(self.agents[i][j].q_table.loc[self.agents])
             # agents[i][j].is_collaborator = agents[agents[i][j].study_x][agents[i][j].study_y].is_collaborator
             if action == 0:
-                agent.is_collaborator = agents[(agent.x - 1) % L][agent.y].is_collaborator
+                agent.next_is_collaborator = agents[(agent.x - 1) % L][agent.y].is_collaborator
             if action == 1:
-                agent.is_collaborator = agents[agent.x][(agent.y - 1) % L].is_collaborator
+                agent.next_is_collaborator = agents[agent.x][(agent.y - 1) % L].is_collaborator
             if action == 2:
-                agent.is_collaborator = agents[(agent.x + 1) % L][agent.y].is_collaborator
+                agent.next_is_collaborator = agents[(agent.x + 1) % L][agent.y].is_collaborator
             if action == 3:
-                agent.is_collaborator = agents[agent.x][(agent.y + 1) % L].is_collaborator
+                agent.next_is_collaborator = agents[agent.x][(agent.y + 1) % L].is_collaborator
         agent.next_action = action
 
     def sarsa(self, agent, agents):
