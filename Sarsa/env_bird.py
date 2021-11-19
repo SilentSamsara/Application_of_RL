@@ -13,7 +13,7 @@ origin = np.array([UNIT / 2, UNIT / 2])
 
 class Env(tk.Tk, object):
 
-    def __init__(self,):
+    def __init__(self):
         super(Env, self).__init__()
         self.end = False
         self.action_space = ['f', 'd']
@@ -94,7 +94,7 @@ class Env(tk.Tk, object):
                     self.obstacle_right = [MAP_W-1, i]
             if gap == 7:
                 self.obstacle_right = [MAP_W-1, 10]
-            self.update()
+            self.draw_game()
         step = black.pop(0)
         black.append(step)
         if action == 0 and self.bird[1] > 0:
@@ -105,11 +105,10 @@ class Env(tk.Tk, object):
         self.obstacle_right[0] = self.obstacle_right[0] - 1
         next_state = [self.obstacle_right[0] - self.bird[0], self.obstacle_right[1] - self.bird[1]]
         if black[self.bird[0]][self.bird[1]]:  # 撞上柱子
-            reward = -100
+            reward = -1000
             done = True
             self.end = True
             # print(next_state)
-            # next_state = 'terminal'
         else:  # 存活奖励
             reward = reward + 1
             done = False

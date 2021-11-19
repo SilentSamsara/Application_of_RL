@@ -10,7 +10,9 @@ class ReinforceLearning(object):
         self.epsilon = e_greedy
         self.q_table = pd.DataFrame(columns=self.actions, dtype=np.float64)
 
-    # 存疑
+    def read_q_table(self):
+        self.q_table = pd.read_excel("./train_round-7000.xlsx")
+
     def check_state_exist(self, state):
         if state not in self.q_table.index:
             self.q_table = self.q_table.append(
@@ -31,19 +33,19 @@ class ReinforceLearning(object):
             action = np.random.choice(self.actions)
         return action
 
-    def sarsa(self, state, action, reward, next_state, next_action, env):
+    def sarsa(self, state, action, reward, next_state, next_action, done):
         self.check_state_exist(next_state)
         q_predict = self.q_table.loc[state, action]
-        if env.end:
+        if not done:
             q_target = reward + self.gamma * self.q_table.loc[next_state, next_action]
         else:
             q_target = reward
         self.q_table.loc[state, action] += self.lr * (q_target - q_predict)
 
-    def q_learning(self, state, action, reward, next_state, next_action, env):
+    def q_learning(self, state, action, reward, next_state, next_action, done):
         self.check_state_exist(next_state)
         q_predict = self.q_table.loc[state, action]
-        if env.end:
+        if not done:
             q_target = reward + self.gamma * max(self.q_table.loc[next_state, :])
         else:
             q_target = reward
