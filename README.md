@@ -2,7 +2,7 @@
 
 ## 博客地址
 
-[Sarsa效果](https://www.cnblogs.com/SilentSamsara/p/15404708.html)
+[小鸟飞行](https://www.cnblogs.com/SilentSamsara/p/15404708.html)
 
 [RL_for_Gaming_to_choose_study_agent效果](https://www.cnblogs.com/SilentSamsara/p/15423027.html)
 
